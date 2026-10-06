@@ -240,7 +240,7 @@
   background-color: var(--swatch-color);
   background-image: var(--swatch-image, none);
   background-size: cover;
-  
+
   background-position: center;
   box-shadow: inset 0 0 0 0.1rem rgba(var(--color-foreground), 0.15);
   cursor: pointer;
@@ -329,4 +329,15 @@
 .curtain-configurator__debug dd {
   margin: 0;
   font-variant-numeric: tabular-nums;
+}
+
+
+.curtain-configurator__description {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain-pill span {
+    transition: none;
+  }
 }
