@@ -8,8 +8,8 @@ Customers enter their required width, select a drop and fabric, and receive a li
 
 Made-to-measure curtains require two measurements:
 
-* **Width** — the width of the curtain along the pole.
-* **Drop** — the finished length of the curtain.
+* **Width** - the width of the curtain along the pole.
+* **Drop** - the finished length of the curtain.
 
 Fabric rolls have a fixed width, so wider curtains require multiple panels sewn together. The number of panels determines the amount of fabric and therefore the base price.
 
@@ -23,9 +23,9 @@ Shopify uses the selected variant price when the product is added to the cart. B
 
 The product uses three options:
 
-* **Drop** — displayed as buttons.
-* **Fabric** — displayed as swatches.
-* **Width range** — selected automatically from the customer's entered width and not exposed as a customer-facing control.
+* **Drop** - displayed as buttons.
+* **Fabric** - displayed as swatches.
+* **Width range** - selected automatically from the customer's entered width and not exposed as a customer-facing control.
 
 When the customer enters a width, the configurator:
 
@@ -177,11 +177,9 @@ Development followed a simple workflow:
 
 
 
-
-
 ## Links
 
-**Live Store:** `https://YOUR-STORE.myshopify.com/products/...`
+**Live Store:** `https://ropstam-task-0wrdqnlo.myshopify.com/`
 
 **Store Password:** `ropstam`
 
@@ -190,12 +188,22 @@ Development followed a simple workflow:
 
 ## Screenshot
 
-assets/cc-desktop.png
-assets/cc-mobile-view.png
-assets/cc-desktop-cart.png
-assets/cc-checkout.png
-assets/cc-admin-order.png
-assets/cc-editor.png
-assets/cc-metaobject-definition.png
-assets/cc-metaobject-entries.png
-assets/cc-metaobject-values.png
+[Desktop view](docs/cc-desktop.png)
+
+[Mobile view](docs/cc-mobile-view.png)
+
+[Cart drawer on desktop](docs/cc-desktop-cart.png)
+
+[Checkout](docs/cc-checkout.png)
+
+[Order in admin with fabric panels](docs/cc-admin-order.png)
+
+[Theme editor with debug panel](docs/cc-editor.png)
+
+[Product setup](docs/cc-product.png)
+
+[Metaobject definition](docs/cc-metaobject-definition.png)
+
+[Metaobject entries](docs/cc-metaobject-entries.png)
+
+[Metaobject values](docs/cc-metaobject-values.png)
