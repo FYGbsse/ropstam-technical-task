@@ -1,0 +1,173 @@
+{{ 'curtain-configurator.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'curtain-configurator.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+.section-{{ section.id }}-padding {
+
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding">
+
+    <curtain-configurator data-section-id="{{ section.id }}">
+      <h1>{{ product.title | escape }}</h1>
+
+      {%- for block in section.blocks -%}
+
+        <div {{ block.shopify_attributes }}>
+
+          {{ block.settings.label | default: block.settings.fabric_value | escape }}
+        </div> 
+
+      {%- endfor -%}
+    </curtain-configurator>
+    
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Curtain configurator",
+  "tag": "section",
+  "class": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "width_label",
+      "label": "Width label",
+      "default": "Width (cm)"
+    },
+    {
+      "type": "text",
+      "id": "drop_label",
+      "label": "Drop label",
+      "default": "Drop (cm)"
+    },
+    {
+      "type": "text",
+      "id": "fabric_label",
+      "label": "Fabric label",
+      "default": "Fabric"
+    },
+    {
+      "type": "header",
+      "content": "How to measure"
+    },
+    {
+      "type": "text",
+      "id": "measure_heading",
+      "label": "Heading",
+      "default": "How to measure"
+    },
+    {
+      "type": "richtext",
+      "id": "measure_text",
+      "label": "Text",
+      "default": "<p>Measure the full width of your track or pole in centimetres. Add extra width if you want the curtains to overlap the window.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Developer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_debug",
+      "label": "Show debug panel",
+      "info": "Only visible inside the theme editor. Never shown to customers.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "swatch",
+      "name": "Fabric swatch",
+      "settings": [
+        {
+          "type": "text",
+          "id": "fabric_value",
+          "label": "Fabric option value",
+          "info": "Must match a Fabric option value on the product exactly (case is ignored)."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Display name",
+          "info": "Leave empty to use the fabric option value."
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Swatch color",
+          "default": "#cccccc"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Texture image",
+          "info": "Optional. Replaces the color."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Curtain configurator",
+      "blocks": [ 
+
+        { "type": "swatch", "settings": { "fabric_value": "Ivory", "color": "#f2ede3" } },
+        { "type": "swatch", "settings": { "fabric_value": "Charcoal", "color": "#3a3a3c" } },
+        { "type": "swatch", "settings": { "fabric_value": "Sage", "color": "#9caf88" } },
+        { "type": "swatch", "settings": { "fabric_value": "Navy", "color": "#1f2a44" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
