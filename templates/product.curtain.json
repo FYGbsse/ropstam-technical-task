@@ -8,52 +8,82 @@
  * ------------------------------------------------------------
  */
 {
-    "sections": {
-        "main": {
-        "type": "curtain-configurator",
-        "blocks": {
-            "swatch_ivory": { "type": "swatch", "settings": { "fabric_value": "Ivory", "color": "#f2ede3" } },
-            "swatch_charcoal": { "type": "swatch", "settings": { "fabric_value": "Charcoal", "color": "#3a3a3c" } },
-            "swatch_sage": { "type": "swatch", "settings": { "fabric_value": "Sage", "color": "#9caf88" } },
-            "swatch_navy": { "type": "swatch", "settings": { "fabric_value": "Navy", "color": "#1f2a44" } }
+  "sections": {
+    "main": {
+      "type": "curtain-configurator",
+      "blocks": {
+        "swatch_ivory": {
+          "type": "swatch",
+          "settings": {
+            "fabric_value": "Ivory",
+            "label": "",
+            "color": "#f2ede3"
+          }
         },
-        "block_order": ["swatch_ivory", "swatch_charcoal", "swatch_sage", "swatch_navy"],
-        "settings": {
-            "color_scheme": "scheme-1",
-            "show_debug": true,
-            "padding_top": 36,
-            "padding_bottom": 36
+        "swatch_charcoal": {
+          "type": "swatch",
+          "settings": {
+            "fabric_value": "Charcoal",
+            "label": "",
+            "color": "#3a3a3c"
+          }
+        },
+        "swatch_sage": {
+          "type": "swatch",
+          "settings": {
+            "fabric_value": "Sage",
+            "label": "",
+            "color": "#9caf88"
+          }
+        },
+        "swatch_navy": {
+          "type": "swatch",
+          "settings": {
+            "fabric_value": "Navy",
+            "label": "",
+            "color": "#1f2a44"
+          }
         }
-        },
-        "disclosures": {
-            "type": "disclosures",
-            "settings": {
-                "padding_top": 36,
-                "padding_bottom": 0
-            }
-        },
-        "related-products": {
-            "type": "related-products",
-            "settings": {
-                "heading": "You may also like",
-                "heading_size": "h2",
-                "products_to_show": 4,
-                "columns_desktop": 4,
-                "columns_mobile": "2",
-                "color_scheme": "scheme-1",
-                "image_ratio": "square",
-                "image_shape": "default",
-                "show_secondary_image": true,
-                "show_vendor": false,
-                "show_rating": false,
-                "padding_top": 36,
-                "padding_bottom": 28
-            }
-        }
+      },
+      "block_order": [
+        "swatch_ivory",
+        "swatch_charcoal",
+        "swatch_sage",
+        "swatch_navy"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "width_label": "Width (cm)",
+        "drop_label": "Drop (cm)",
+        "fabric_label": "Fabric",
+        "measure_heading": "How to measure",
+        "measure_text": "<p>Measure the full width of your track or pole in centimetres. Add extra width if you want the curtains to overlap the window.</p>",
+        "show_debug": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     },
-    "order": [
-        "main",
-        "disclosures",
-        "related-products"
-    ]
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related-products"
+  ]
 }
