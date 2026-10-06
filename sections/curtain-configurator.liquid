@@ -1,40 +1,396 @@
+{%- liquid
+  assign tiers = product.metafields.custom.pricing_tiers.value
+
+  for option in product.options_with_values
+    assign option_key = option.name | strip | downcase
+    case option_key 
+      when 'drop'
+        assign drop_option = option
+      when 'fabric'
+        assign fabric_option = option        
+      when 'width range'
+        assign width_option = option 
+    endcase
+  endfor
+
+
+
+    for tier in tiers
+
+    assign tier_min = tier.min_width.value
+    assign tier_max = tier.max_width.value
+    if tier_min != blank
+      if width_min == blank or tier_min < width_min
+        assign width_min = tier_min
+      endif
+    endif
+    if tier_max != blank
+      if width_max == blank or tier_max > width_max
+        assign width_max = tier_max
+      endif
+    endif
+  endfor
+
+  assign selected_variant = product.selected_or_first_available_variant
+  assign images = product.media | where: 'media_type', 'image'
+  assign initial_media_id = images.first.id
+
+  if selected_variant.featured_media.media_type == 'image'
+    assign initial_media_id = selected_variant.featured_media.id
+  endif
+
+  assign selected_fabric = fabric_option.selected_value
+
+  assign selected_fabric_key = selected_fabric | strip | downcase
+  assign selected_fabric_label = selected_fabric
+  for block in section.blocks
+    assign block_key = block.settings.fabric_value | strip | downcase
+    if block_key == selected_fabric_key and block.settings.label != blank
+      assign selected_fabric_label = block.settings.label
+    endif
+  endfor
+
+  assign config_errors = ''
+  if tiers == blank
+    assign config_errors = config_errors | append: 'The product metafield custom.pricing_tiers is empty or cannot be read. Check that tier entries are selected and that the metaobject has Storefronts access.|'
+  endif 
+  if drop_option == blank
+    assign config_errors = config_errors | append: 'The product has no "Drop" option.|'
+  endif
+  if fabric_option == blank
+    assign config_errors = config_errors | append: 'The product has no "Fabric" option.|'
+  endif
+  if width_option == blank
+
+    assign config_errors = config_errors | append: 'The product has no "Width range" option.|'
+  endif
+  assign config_errors = config_errors | split: '|'
+
+  assign is_base_currency = false 
+
+  if cart.currency.iso_code == shop.currency
+
+    assign is_base_currency = true
+  endif
+-%}
+
+
 {{ 'curtain-configurator.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'curtain-configurator.js' | asset_url }}" defer="defer"></script>
 
+
 {%- style -%}
 .section-{{ section.id }}-padding {
+  
 
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-
+   
   }
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
-  }
+  }   
 {%- endstyle -%}
-
 
 <div class="color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width section-{{ section.id }}-padding">
+    {%- if config_errors.size > 0 -%}
+      <div class="curtain-configurator-unavailable">
+        <h1>{{ product.title | escape }}</h1>
+        {%- if request.design_mode -%}
+          <div class="curtain-configurator__setup-error" role="alert">
+            <p><strong>Curtain configurator setup problem</strong></p>
+            <ul>
+              {%- for error in config_errors -%}
+                <li>{{ error }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- else -%}
+          <p>This product is not available to order right now.</p>
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      <curtain-configurator class="curtain-configurator" data-section-id="{{ section.id }}">
+        <div class="curtain-configurator__media">
+          <div class="curtain-configurator__frame">
+            {%- if images.size > 0 -%}
+              {%- for media in images -%}
+                {%- liquid
+                  assign loading = 'lazy'
+                  if media.id == initial_media_id
+                    assign loading = 'eager'
+                  endif
+                -%}
+                <div
+                  class="curtain-configurator__slide"
+                  data-media-id="{{ media.id }}"
+                  {% unless media.id == initial_media_id %}
+                    hidden
+                  {% endunless %}
+                >
+                  {{
+                    media
+                    | image_url: width: 1500
+                    | image_tag:
+                      widths: '360, 540, 720, 900, 1080, 1296, 1500',
+                      sizes: '(min-width: 990px) 50vw, 100vw',
+                      loading: loading
+                  }}
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
 
-    <curtain-configurator data-section-id="{{ section.id }}">
-      <h1>{{ product.title | escape }}</h1>
+          {%- if images.size > 1 -%}
+            <ul class="curtain-configurator__thumbs" role="list">
+              {%- for media in images -%}
+                <li>
+                  <button
+                    type="button"
+                    class="curtain-configurator__thumb"
+                    data-thumb="{{ media.id }}"
+                    aria-label="Show image {{ forloop.index }} of {{ images.size }}"
+                    {% if media.id == initial_media_id %}
+                      aria-current="true"
+                    {% endif %}
+                  >
+                    {{ media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+                  </button>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
 
-      {%- for block in section.blocks -%}
+        <div class="curtain-configurator__info">
+          <h1 class="curtain-configurator__title">{{ product.title | escape }}</h1>
 
-        <div {{ block.shopify_attributes }}>
+          <p class="curtain-configurator__price" aria-live="polite" data-price>
+            From {{ product.price_min | money }}
+          </p>
 
-          {{ block.settings.label | default: block.settings.fabric_value | escape }}
-        </div> 
+          <div class="curtain-configurator__field">
+            <label class="curtain-configurator__label" for="CurtainWidth-{{ section.id }}">
+              {{- section.settings.width_label | escape -}}
+            </label>
+            <div class="curtain-configurator__input-wrap">
+              <input
+                class="curtain-configurator__input"
+                type="number"
+                id="CurtainWidth-{{ section.id }}"
+                name="width"
+                inputmode="numeric"
+                step="1"
+                min="{{ width_min }}"
+                max="{{ width_max }}"
+                autocomplete="off"
+                aria-describedby="CurtainWidthHelp-{{ section.id }} CurtainWidthError-{{ section.id }}"
+                data-width-input
+              >
+              <span class="curtain-configurator__suffix" aria-hidden="true">cm</span>
+            </div>
+            <p class="curtain-configurator__help" id="CurtainWidthHelp-{{ section.id }}">
+              Between {{ width_min }} and {{ width_max }}cm
+            </p>
+            <p
+              class="curtain-configurator__error"
+              id="CurtainWidthError-{{ section.id }}"
+              data-width-error
+            ></p>
+          </div>
 
-      {%- endfor -%}
-    </curtain-configurator>
-    
+          <fieldset class="curtain-configurator__field">
+            <legend class="curtain-configurator__label">{{ section.settings.drop_label | escape }}</legend>
+            <div class="curtain-configurator__pills">
+              {%- for value in drop_option.values -%}
+                <label class="curtain-pill">
+                  <input
+                    type="radio"
+                    class="visually-hidden"
+                    name="Drop-{{ section.id }}"
+                    value="{{ value.name | escape }}"
+                    data-drop-input
+                    {% if value.selected %}
+                      checked
+                    {% endif %}
+                  >
+                  <span>{{ value.name | escape }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+
+          <fieldset class="curtain-configurator__field">
+            <legend class="curtain-configurator__label">
+              {{ section.settings.fabric_label | escape }}:
+              <span data-fabric-name>{{ selected_fabric_label | escape }}</span>
+            </legend>
+            <div class="curtain-configurator__swatches">
+              {%- for block in section.blocks -%}
+                {%- liquid
+                  assign block_key = block.settings.fabric_value | strip | downcase
+                  assign matched_value = ''
+                  assign matched_selected = false
+                  for value in fabric_option.values
+                    assign value_key = value.name | strip | downcase
+                    if value_key == block_key
+                      assign matched_value = value.name
+                      assign matched_selected = value.selected
+                    endif
+                  endfor
+                  assign swatch_label = block.settings.label | default: matched_value
+                -%}
+                {%- if matched_value != '' -%}
+                  <label
+                    class="curtain-swatch"
+                    {{ block.shopify_attributes }}
+                    style="--swatch-color: {{ block.settings.color }};{% if block.settings.image %} --swatch-image: url('{{ block.settings.image | image_url: width: 120 }}');{% endif %}"
+                  >
+                    <input
+                      type="radio"
+                      class="visually-hidden"
+                      name="Fabric-{{ section.id }}"
+                      value="{{ matched_value | escape }}"
+                      data-fabric-input
+                      data-label="{{ swatch_label | escape }}"
+                      {% if matched_selected %}
+                        checked
+                      {% endif %}
+                    >
+                    <span class="curtain-swatch__dot" aria-hidden="true"></span>
+                    <span class="visually-hidden">{{ swatch_label | escape }}</span>
+                  </label>
+                {%- elsif request.design_mode -%}
+                  <p class="curtain-configurator__block-warning" {{ block.shopify_attributes }}>
+                    Swatch "{{ block.settings.fabric_value | escape }}" does not match any Fabric option value. It is
+                    hidden for customers.
+                  </p>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+
+            {%- if request.design_mode -%}
+              {%- for value in fabric_option.values -%}
+                {%- liquid
+                  assign value_key = value.name | strip | downcase
+                  assign has_block = false
+                  for block in section.blocks
+                    assign block_key = block.settings.fabric_value | strip | downcase
+                    if block_key == value_key
+                      assign has_block = true
+                    endif
+                  endfor
+                -%}
+                {%- unless has_block -%}
+                  <p class="curtain-configurator__block-warning">
+                    Fabric "{{ value.name | escape }}" has no swatch block, so customers cannot choose it.
+                  </p>
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endif -%}
+          </fieldset>
+
+          <p class="curtain-configurator__summary" data-summary>enter a width to see your curtain</p>
+
+          <button
+            type="button"
+            class="button button--full-width curtain-configurator__add"
+            data-add-button
+            disabled
+          >
+            <span data-add-label>enter a width</span>
+          </button>
+
+          <p class="curtain-configurator__error" role="alert" data-cart-error></p>
+
+          {%- if section.settings.measure_text != blank -%}
+            <details class="curtain-configurator__measure">
+              <summary>{{ section.settings.measure_heading | escape }}</summary>
+              <div class="rte">{{ section.settings.measure_text }}</div>
+            </details>
+          {%- endif -%}
+
+          {%- if request.design_mode and section.settings.show_debug -%}
+            <div class="curtain-configurator__debug" data-debug>
+              <p class="curtain-configurator__debug-title">debug ( in theme editor only)</p>
+              <dl>
+                <dt>Width tier</dt>
+                <dd data-debug-field="tier">–</dd>
+                <dt>panels</dt>
+                <dd data-debug-field="panels">–</dd>
+                <dt>Drop step</dt>
+                <dd data-debug-field="dropStep">–</dd>
+                <dt>Calculated price</dt>
+                <dd data-debug-field="calculated">–</dd>
+                <dt>variant ID</dt>
+                <dd data-debug-field="variantId">–</dd>
+                <dt>Variant price</dt>
+                <dd data-debug-field="variantPrice">–</dd>
+                <dt>Warnings</dt>
+                <dd data-debug-field="warnings"> None</dd>
+              </dl>
+            </div>
+          {%- endif -%}
+        </div>
+
+        <script type="application/json" data-curtain-config>
+          {
+            "sectionId": {{ section.id | json }},  
+            "productId": {{ product.id }},
+            "moneyFormat": {{ shop.money_format | strip_html | json }},
+            "isBaseCurrency": {{ is_base_currency }},
+            "options": {   
+              "drop": {
+             "position": {{ drop_option.position }},
+                "values": [{% for value in drop_option.values %}{{ value.name | json }}{% unless forloop.last %},{% endunless %}{% endfor %}]
+              },
+              "fabric": {
+                "position": {{ fabric_option.position }},
+                "values": [{% for value in fabric_option.values %}{{ value.name | json }}{% unless forloop.last %},{% endunless %}{% endfor %}]
+              },
+              "widthRange": {
+             "position": {{ width_option.position }},
+                "values": [{% for value in width_option.values %}{{ value.name | json }}{% unless forloop.last %},{% endunless %}{% endfor %}]
+              }
+            },
+            "tiers": [
+              {%- for tier in tiers -%}
+                {
+                  "min": {{ tier.min_width.value | default: 'null' }},
+                  "max": {{ tier.max_width.value | default: 'null' }},
+                  "panels": {{ tier.panels_required.value | default: 'null' }},
+                  "baseCents": {% if tier.base_price.value == blank %}null{% else %}{{ tier.base_price.value | times: 100 | round }}{% endif %},
+                  "perDropCents": {% if tier.price_per_drop_tier.value == blank %}null{% else %}{{ tier.price_per_drop_tier.value | times: 100 | round }}{% endif %}
+                }{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ],
+            "variants": [
+              {%- for variant in product.variants -%}
+                {
+                  "id": {{ variant.id }},
+                    "options": {{ variant.options | json }},  
+                  "priceCents": {{ variant.price }},
+                  "available": {{ variant.available }},   
+                  "featuredMediaId": {{ variant.featured_media.id | default: 'null' }}
+                }{% unless forloop.last %},{% endunless %}    
+              {%- endfor -%}
+            ]
+          }
+        </script> 
+           
+      </curtain-configurator>   
+    {%- endif -%}
   </div>
 </div>
+
+  
+
 
 {% schema %}
 {
