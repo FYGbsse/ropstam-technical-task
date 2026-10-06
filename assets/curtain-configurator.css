@@ -2,8 +2,10 @@
 .curtain-configurator {
   --curtain-error: 196, 41, 41;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 3rem;
-}   
+}
+  
 
 @media screen and (min-width: 990px) {
   .curtain-configurator {
@@ -329,7 +331,9 @@
 .curtain-configurator__debug dd {
   margin: 0;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
+
 
 /* 
 .curtain-configurator__description {
