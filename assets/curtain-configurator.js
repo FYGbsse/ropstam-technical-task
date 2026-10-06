@@ -244,6 +244,7 @@ if (!customElements.get('curtain-configurator')) {
         addButton: this.querySelector('[data-add-button]'),
         addLabel: this.querySelector('[data-add-label]'),
         cartError: this.querySelector('[data-cart-error]'),
+        quantity: this.querySelector('[data-quantity-input]'),
         fabricName: this.querySelector('[data-fabric-name]'),
         slides: this.querySelectorAll('[data-media-id]'),
         thumbs: this.querySelectorAll('[data-thumb]'),
@@ -293,7 +294,7 @@ if (!customElements.get('curtain-configurator')) {
       );
 
       this.addEventListener('change', (event) => {
-        if (!event.target.matches('[data-drop-input], [data-fabric-input]')) return;
+        if (!event.target.matches('[data-drop-input], [data-fabric-input], [data-quantity-input]')) return;
         this.setCartError('');
         this.update();
       });
@@ -617,7 +618,7 @@ if (!customElements.get('curtain-configurator')) {
     buildCartPayload(state, cart) {
       const body = {
         id: state.variant.id,
-        quantity: 1,
+        quantity: this.getQuantity(),
         properties: {
           Width: `${state.width.value}cm`,
           Drop: state.drop,
@@ -632,6 +633,16 @@ if (!customElements.get('curtain-configurator')) {
       }
 
       return body;
+    }
+
+    /** Whole number of at least 1; also writes the cleaned value back to the input. */
+    getQuantity() {
+      const { quantity } = this.elements;
+      if (!quantity) return 1;
+
+      const value = Math.max(1, parseInt(quantity.value, 10) || 1);
+      quantity.value = value;
+      return value;
     }
 
     /** Let other Dawn components (e.g. cart counters) know the cart changed. */

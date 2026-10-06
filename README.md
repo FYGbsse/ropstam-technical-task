@@ -45,6 +45,7 @@ No pricing ranges, limits or panel counts are hardcoded in the JavaScript.
 The sample configuration contains:
 
 | Width     | Panels | Base | Drop Tier |
+|-----------|-------:|-----:|----------:|
 | 50–120cm  |      1 | $100 |       $20 |
 | 121–240cm |      2 | $180 |       $30 |
 | 241–360cm |      3 | $260 |       $40 |
@@ -74,7 +75,9 @@ Production-only property:
 
 The underscore prefix keeps the panel count hidden from customers while preserving it on the order for the workroom.
 
-The cart request also uses Shopify's **Section Rendering API** to refresh the Dawn cart drawer without a full page reload.
+The request is sent as a single item (`id`, `quantity`, `properties`) rather than an `items` array, because the single-item response returns the line item with the `key` and `id` that Dawn's cart drawer and notification need. Quantity comes from the quantity selector and is cleaned to a whole number of at least 1.
+
+The cart request also uses Shopify's **Section Rendering API** to refresh the Dawn cart drawer without a full page reload. The `sections` and `sections_url` fields ask Shopify to return the updated cart HTML in the same response.
 
 The add-to-cart button is disabled while the request is processing to prevent duplicate submissions, and Shopify API errors are displayed to the customer.
 
@@ -130,13 +133,25 @@ To add a new drop or fabric, add the corresponding product option values and var
 
 The theme editor also includes a development-only debug panel showing the resolved tier, panel count, price and variant for a given width.
 
+## Setup on a Fresh Store
+
+1. In **Settings → Custom data → Metaobjects**, add a definition named `Curtain Pricing Tier`.
+2. Add the fields `min_width`, `max_width` and `panels_required` as **Integer**, and `base_price` and `price_per_drop_tier` as **Decimal**.
+3. Turn on **Storefronts** access so the theme can read the entries.
+4. In **Content → Metaobjects**, add the three tier entries from the table above.
+5. In **Settings → Custom data → Products**, add the metafield `custom.pricing_tiers` as a list of `Curtain Pricing Tier` entries.
+6. Create the product with the options **Drop** (150cm, 200cm, 250cm), **Fabric** (Ivory, Charcoal, Sage, Navy) and **Width range** (50-120cm, 121-240cm, 241-360cm), and set each variant's price from the formula.
+7. Select the three tiers in the product's `custom.pricing_tiers` metafield and assign the `curtain` product template.
+8. In theme settings, set the cart type to **Drawer** and turn **Quick add** off, so Dawn's standard variant picker never shows the Width range option.
+
 ## Files
 
-sections/ curtain-configurator.liquid
+```
+sections/curtain-configurator.liquid
 assets/curtain-configurator.js
-assets/curtain-configurator.js
+assets/curtain-configurator.css
 templates/product.curtain.json
-
+```
 
 `curtain-configurator.liquid` renders the configurator and passes the Shopify data to JavaScript.
 

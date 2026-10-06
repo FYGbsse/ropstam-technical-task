@@ -296,8 +296,40 @@
               {%- endfor -%}
             {%- endif -%}
           </fieldset>
+         
+          <div class="curtain-configurator__field">
+            <label class="curtain-configurator__label" for="CurtainQuantity-{{ section.id }}">
+              {{- 'products.product.quantity.label' | t -}}
+            </label>
+            <quantity-input class="quantity">
+              <button class="quantity__button" name="minus" type="button">
+                <span class="visually-hidden">
+                  {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                </span>
+                <span class="svg-wrapper">{{- 'icon-minus.svg' | inline_asset_content -}}</span>
+              </button>
+              <input
+                class="quantity__input"
+                type="number"
+                id="CurtainQuantity-{{ section.id }}"
+                name="quantity"
+                inputmode="numeric"
+                min="1"
+                step="1"
+                value="1"
+                data-quantity-input
+              >
+              <button class="quantity__button" name="plus" type="button">
+                <span class="visually-hidden">
+                  {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                </span>
+                <span class="svg-wrapper">{{- 'icon-plus.svg' | inline_asset_content -}}</span>
+              </button>
+            </quantity-input>
+          </div>
 
-          <p class="curtain-configurator__summary" data-summary>enter a width to see your curtain</p>
+
+          <p class="curtain-configurator__summary" data-summary>Enter a width to see your curtain</p>
 
           <button
             type="button"
@@ -305,7 +337,7 @@
             data-add-button
             disabled
           >
-            <span data-add-label>enter a width</span>
+            <span data-add-label>Enter a width</span>
           </button>
 
           <p class="curtain-configurator__error" role="alert" data-cart-error></p>
