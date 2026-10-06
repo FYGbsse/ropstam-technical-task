@@ -310,12 +310,21 @@
 
           <p class="curtain-configurator__error" role="alert" data-cart-error></p>
 
+          
           {%- if section.settings.measure_text != blank -%}
-            <details class="curtain-configurator__measure">
+            <details class="curtain-configurator__accordion">
               <summary>{{ section.settings.measure_heading | escape }}</summary>
               <div class="rte">{{ section.settings.measure_text }}</div>
             </details>
           {%- endif -%}
+          
+         {%- if product.description != blank -%}
+            <details class="curtain-configurator__accordion">
+              <summary>Description</summary>
+              <div class="rte">{{ product.description }}</div>
+            </details>
+          {%- endif -%}
+
 
           {%- if request.design_mode and section.settings.show_debug -%}
             <div class="curtain-configurator__debug" data-debug>
