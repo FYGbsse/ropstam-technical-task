@@ -58,9 +58,9 @@
         "fabric_label": "Fabric",
         "measure_heading": "How to measure",
         "measure_text": "<p>Measure the full width of your track or pole in centimetres. Add extra width if you want the curtains to overlap the window.</p>",
-        "show_debug": true,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "show_debug": false,
+        "padding_top": 24,
+        "padding_bottom": 24
       }
     },
     "related-products": {
