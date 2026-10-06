@@ -180,6 +180,7 @@ Development followed a simple workflow:
 ## Links
 
 **Live Store:** `https://ropstam-task-0wrdqnlo.myshopify.com/`
+[Direct Link ](https://ropstam-task-0wrdqnlo.myshopify.com)
 
 **Store Password:** `ropstam`
 
@@ -188,22 +189,22 @@ Development followed a simple workflow:
 
 ## Screenshot
 
-[Desktop view](docs/cc-desktop.png)
+[Desktop view](assets/cc-desktop.png)
 
-[Mobile view](docs/cc-mobile-view.png)
+[Mobile view](assets/cc-mobile-view.png)
 
-[Cart drawer on desktop](docs/cc-desktop-cart.png)
+[Cart drawer on desktop](assets/cc-desktop-cart.png)
 
-[Checkout](docs/cc-checkout.png)
+[Checkout](assets/cc-checkout.png)
 
-[Order in admin with fabric panels](docs/cc-admin-order.png)
+[Order in admin with fabric panels](assets/cc-admin-order.png)
 
-[Theme editor with debug panel](docs/cc-editor.png)
+[Theme editor with debug panel](assets/cc-editor.png)
 
-[Product setup](docs/cc-product.png)
+[Product setup](assets/cc-product.png)
 
-[Metaobject definition](docs/cc-metaobject-definition.png)
+[Metaobject definition](assets/cc-metaobject-definition.png)
 
-[Metaobject entries](docs/cc-metaobject-entries.png)
+[Metaobject entries](assets/cc-metaobject-entries.png)
 
-[Metaobject values](docs/cc-metaobject-values.png)
+[Metaobject values](assets/cc-metaobject-values.png)
