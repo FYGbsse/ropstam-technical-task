@@ -275,12 +275,12 @@
 }
 
 /* How to measure */
-.curtain-configurator__measure {   
+.curtain-configurator__accordion {   
   border-top: 0.1rem solid rgba(var(--color-foreground), 0.15);
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.15);
 }
   
-.curtain-configurator__measure summary {  
+.curtain-configurator__accordion summary  {  
 
   display: flex;
 
@@ -289,7 +289,7 @@
   cursor: pointer;
 }
 
-.curtain-configurator__measure .rte {
+.curtain-configurator__accordion .rte {
   padding-bottom: 1.6rem;
 
 }
@@ -331,10 +331,10 @@
   font-variant-numeric: tabular-nums;
 }
 
-
+/* 
 .curtain-configurator__description {
   margin: 0;
-}
+} */
 
 @media (prefers-reduced-motion: reduce) {
   .curtain-pill span {
